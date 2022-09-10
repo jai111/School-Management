@@ -1,19 +1,16 @@
 import React, {useReducer, useState} from 'react'
-import './AddUser.css'
-import { FaEnvelope, FaLock, FaUserAlt } from "react-icons/fa"
+import './LoginPage.css'
+import { FaEnvelope, FaLock } from "react-icons/fa"
 import axios from 'axios'
 import { useNavigate} from 'react-router-dom'
 
 const initialFormState = {
-    firstname: "",
-    lastname: "",
     email: "",
-    password: "",
-    role: "admin"
+    password: ""
     };
 
 
-let AddUser = (props) =>{
+let LoginPage = (props) =>{
 
     let navigate = useNavigate()
 
@@ -42,14 +39,11 @@ let AddUser = (props) =>{
             setMessage('Enter valid email')
             return false
         }
-        if(form.password.length <8){
-            setMessage('Password must be of atleast length 8')
+        if(!form.password){
+            setMessage('Enter Password')
             return false
         }
-        if(!form.firstname){
-            setMessage('Enter first name')
-            return false
-        }
+
         return true
     }
 
@@ -57,16 +51,24 @@ let AddUser = (props) =>{
         if(!Validate(formState)){
             return
         }
-        axios.post('/api/users/register', formState)
+        setIsSubmiting(true)
+        axios.post('/api/users/login', formState)
         .then(response => {
-            if(response.data.success){
-                    navigate("../login", { replace: true });
+            if(response.data.loginSuccess){
+                localStorage.setItem('user',  JSON.stringify(response.data.user))
+                navigate("../", { replace: true });
             }
             else{
-                setMessage(response.data.message)
+                setMessage('Check your account or password again')
             }
         })
-        .catch(err=> alert(err))
+        .catch(err=> {
+            setMessage('Check your account or password again')
+            setTimeout(() => {
+                setMessage("")
+              }, 3000);
+        })
+        setIsSubmiting(false)
     }
 
     const [formState, dispatch] = useReducer(formReducer, initialFormState)
@@ -86,7 +88,7 @@ let AddUser = (props) =>{
         <div className="form_wrapper">
             <div className="form_container">
             <div className="title_container">
-                <h2>Add User</h2>
+                <h2>Login</h2>
             </div>
             <div className="row clearfix">
                 <div className="">
@@ -100,30 +102,7 @@ let AddUser = (props) =>{
                             <span><FaLock style={{marginTop:'8px'}}/></span>
                             <input type="password" name="password" placeholder="Password" value={formState.password}  onChange={(e)=>handleTextChange(e)} required />
                         </div>
-                        <div className="row clearfix">
-                            <div className="col_half">
-                                <div className="input_field">
-                                    <span><FaUserAlt style={{marginTop:'8px'}}/></span>
-                                    <input type="text" name="firstname" placeholder="First Name" value={formState.firstname}  onChange={(e)=>handleTextChange(e)} required />
-                                </div>                                
-                            </div>
-                            <div className="col_half">
-                                <div className="input_field"> <span><FaUserAlt style={{marginTop:'8px'}}/></span>
-                                    <input type="text" name="lastname" placeholder="Last Name" value={formState.lastname}  onChange={(e)=>handleTextChange(e)}  />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="input_field select_option">
-                            <select name='role' value={formState.role}  onChange={(e)=>handleTextChange(e)} required>
-                                <option value="role" disabled selected>Role</option>
-                                <option value='non-teacher'>Non-Teacher</option>
-                                <option value='admin'>Admin</option>
-                                <option value='teacher'>Teacher</option>
-                                <option value='student'>Student</option>
-                            </select>
-                            <div className="select_arrow"></div>
-                        </div>
-                        <input className="button" type="button" value="Register" disabled={isSubmiting} onClick={handleSubmit}  />
+                        <input className="button" type="button" value="Login" disabled={isSubmiting} onClick={handleSubmit}  />
                     </form>
                 </div>
             </div>
@@ -132,4 +111,4 @@ let AddUser = (props) =>{
     )
 }
 
-export default AddUser;
+export default LoginPage;

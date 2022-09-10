@@ -21,12 +21,14 @@ router.get("/auth", auth, (req, res) => {
     });
 });
 
-router.post("/register", (req, res) => {
+router.post("/register", auth('admin'),  (req, res) => {
+    console.log(req.body)
 
     const user = new User(req.body);
 
     user.save((err, doc) => {
-        if (err) return res.json({ success: false, err });
+        if (err) {return res.json({ success: false, err, message: 'Email already exists!!' });}
+        console.log(doc)
         return res.status(200).json({
             success: true
         });
@@ -47,12 +49,20 @@ router.post("/login", (req, res) => {
 
             user.generateToken((err, user) => {
                 if (err) return res.status(400).send(err);
+                let obj = {
+                    _id: user._id,
+                    firstname: user.firstname,
+                    lastname: user.lastname,
+                    email: user.email,
+                    role: user.role,
+                }
+                
                 res.cookie("w_authExp", user.tokenExp);
                 res
                     .cookie("w_auth", user.token)
                     .status(200)
                     .json({
-                        loginSuccess: true, userId: user._id
+                        loginSuccess: true, user: obj
                     });
             });
         });

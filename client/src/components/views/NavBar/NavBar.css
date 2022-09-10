@@ -27,3 +27,19 @@ main {
     cursor: pointer;
     vertical-align: middle;
 }
+
+.btn {
+    border: none;
+    color: white;
+    background-color: inherit;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-block;
+  }
+  
+a{
+    text-decoration: none;
+    color: white;
+    font-size: 12px;
+}

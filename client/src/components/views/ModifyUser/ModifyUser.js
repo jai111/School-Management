@@ -1,21 +1,14 @@
 import React, {useReducer, useState} from 'react'
-import './AddUser.css'
+import './ModifyUser.css'
 import { FaEnvelope, FaLock, FaUserAlt } from "react-icons/fa"
 import axios from 'axios'
     import { useNavigate} from 'react-router-dom'
 
 const initialFormState = {
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: "",
-    role: "non-teacher",
-    grade: 6,
-    subject: 'maths'
-    };
+};
 
 
-let AddUser = (props) =>{
+let ModifyUser = (props) =>{
 
     let navigate = useNavigate()
 
@@ -23,8 +16,8 @@ let AddUser = (props) =>{
         switch(action.type){
             case "HANDLE_INPUT_TEXT":
                 return {
-                    ...state,
-                    [action.field]: action.payload,
+                        ...state,
+                        [action.field]: action.payload,
                 }
             default:
                 return state;
@@ -40,18 +33,16 @@ let AddUser = (props) =>{
       };
 
     let Validate = (form)=>{
+        if(!validateEmail(form.oldemail)){
+            setMessage('Enter valid Old email')
+            setSuccessMessage('')
+            return false
+        }
+        if(!form.email){
+            return true
+        }
         if(!validateEmail(form.email)){
             setMessage('Enter valid email')
-            setSuccessMessage('')
-            return false
-        }
-        if(form.password.length <8){
-            setMessage('Password must be of atleast length 8')
-            setSuccessMessage('')
-            return false
-        }
-        if(!form.firstname){
-            setMessage('Enter first name')
             setSuccessMessage('')
             return false
         }
@@ -62,10 +53,10 @@ let AddUser = (props) =>{
         if(!Validate(formState)){
             return
         }
-        axios.post('/api/users/register', formState)
+        axios.post('/api/users/modifyuser', formState)
         .then(response => {
             if(response.data.success){
-                    setSuccessMessage('User Created Successfully')
+                    setSuccessMessage(response.data.message)
                     setMessage('')
             }
             else{
@@ -94,7 +85,7 @@ let AddUser = (props) =>{
         <div className="form_wrapper">
             <div className="form_container">
             <div className="title_container">
-                <h2>Add User</h2>
+                <h2>Modify User</h2>
             </div>
             <div className="row clearfix">
                 <div className="">
@@ -103,11 +94,11 @@ let AddUser = (props) =>{
                     <form >
                         <div className="input_field">
                             <span><FaEnvelope style={{marginTop:'8px'}}/></span>
-                            <input type="email" name="email" placeholder="Email" value={formState.email}  onChange={(e)=>handleTextChange(e)} required />
+                            <input type="email" name="oldemail" placeholder="Old Email*" value={formState.oldemail}  onChange={(e)=>handleTextChange(e)} required />
                         </div>
                         <div className="input_field">
-                            <span><FaLock style={{marginTop:'8px'}}/></span>
-                            <input type="password" name="password" placeholder="Password" value={formState.password}  onChange={(e)=>handleTextChange(e)} required />
+                            <span><FaEnvelope style={{marginTop:'8px'}}/></span>
+                            <input type="email" name="email" placeholder="New Email" value={formState.email}  onChange={(e)=>handleTextChange(e)} required />
                         </div>
                         <div className="row clearfix">
                             <div className="col_half">
@@ -165,7 +156,7 @@ let AddUser = (props) =>{
                             :
                             null
                         }
-                        <input className="button" type="button" value="Register" disabled={isSubmiting} onClick={handleSubmit}  />
+                        <input className="button" type="button" value="Update" disabled={isSubmiting} onClick={handleSubmit}  />
                     </form>
                 </div>
             </div>
@@ -174,4 +165,4 @@ let AddUser = (props) =>{
     )
 }
 
-export default AddUser;
+export default ModifyUser;

@@ -11,6 +11,11 @@ const studentSchema = mongoose.Schema({
     email :{
         type: String
     },
+    teachers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+        }
+    ],
     midterm1: [
         {
             math : Number,

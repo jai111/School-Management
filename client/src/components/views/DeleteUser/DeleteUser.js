@@ -1,18 +1,14 @@
 import React, {useReducer, useState} from 'react'
-import './LoginPage.css'
+import './DeleteUser.css'
 import { FaEnvelope, FaLock } from "react-icons/fa"
 import axios from 'axios'
-import { useNavigate} from 'react-router-dom'
 
 const initialFormState = {
-    email: "",
-    password: ""
+    email: ""
     };
 
 
-let LoginPage = (props) =>{
-
-    let navigate = useNavigate()
+let DeleteUser = (props) =>{
 
     const formReducer = (state, action) => {
         switch(action.type){
@@ -39,11 +35,6 @@ let LoginPage = (props) =>{
             setMessage('Enter valid email')
             return false
         }
-        if(!form.password){
-            setMessage('Enter Password')
-            return false
-        }
-
         return true
     }
 
@@ -52,18 +43,20 @@ let LoginPage = (props) =>{
             return
         }
         setIsSubmiting(true)
-        axios.post('/api/users/login', formState)
+        axios.post('/api/users/deleteuser', formState)
         .then(response => {
-            if(response.data.loginSuccess){
-                localStorage.setItem('user',  JSON.stringify(response.data.user))
-                navigate("../", { replace: true });
+
+            if(response.data.success){
+                setSuccessMessage(response.data.message)
+                setMessage('')
             }
             else{
-                setMessage('Check your account or password again')
+                setMessage(response.data.message)
+                setSuccessMessage('')
             }
         })
         .catch(err=> {
-            setMessage('Check your account or password again')
+            setMessage('Check your email')
             setTimeout(() => {
                 setMessage("")
               }, 3000);
@@ -74,6 +67,7 @@ let LoginPage = (props) =>{
     const [formState, dispatch] = useReducer(formReducer, initialFormState)
     const [isSubmiting, setIsSubmiting] = useState(false)
     const [message, setMessage] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
 
     const handleTextChange = (e) => {
         dispatch(
@@ -84,26 +78,22 @@ let LoginPage = (props) =>{
             }
         )
     }
-    
     return (
         <div className="form_wrapper">
             <div className="form_container">
             <div className="title_container">
-                <h2>Login</h2>
+                <h2>Delete User</h2>
             </div>
             <div className="row clearfix">
                 <div className="">
                     <div style={{color: 'red', textAlign: 'center', marginBottom: '10px'}}>{message}</div>
+                    <div style={{color: 'green', textAlign: 'center', marginBottom: '10px'}}>{successMessage}</div>
                     <form >
                         <div className="input_field">
                             <span><FaEnvelope style={{marginTop:'8px'}}/></span>
                             <input type="email" name="email" placeholder="Email" value={formState.email}  onChange={(e)=>handleTextChange(e)} required />
                         </div>
-                        <div className="input_field">
-                            <span><FaLock style={{marginTop:'8px'}}/></span>
-                            <input type="password" name="password" placeholder="Password" value={formState.password}  onChange={(e)=>handleTextChange(e)} required />
-                        </div>
-                        <input className="button" type="button" value="Login" disabled={isSubmiting} onClick={handleSubmit}  />
+                        <input className="button" type="button" value="Delete" disabled={isSubmiting} onClick={handleSubmit}  />
                     </form>
                 </div>
             </div>
@@ -112,4 +102,4 @@ let LoginPage = (props) =>{
     )
 }
 
-export default LoginPage;
+export default DeleteUser;

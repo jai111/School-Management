@@ -13,7 +13,7 @@ let LandingPage = () => {
      
          let user = JSON.parse(localStorage.getItem('user'))
          if(user.role == 'admin')  navigate("../adduser", { replace: true });
-         if(user.role == 'non-teacher')  navigate("../assgin", { replace: true });
+         if(user.role == 'non-teacher'|| user.role == 'teacher')  navigate("../studentlist", { replace: true });
     })
 }
 

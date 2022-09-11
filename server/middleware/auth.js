@@ -3,7 +3,6 @@ const { User } = require('../models/User');
 function auth(role) {
   return auth[role] || (auth[role] = function(req, res, next) {
     let token = req.cookies.w_auth;
-    console.log(token, 'dddddd')
 
     User.findByToken(token, (err, user) => {
       if (err) throw err;
@@ -13,8 +12,9 @@ function auth(role) {
           error: true,
           message: 'Authentication failed'
         });
+
         if(role){
-          if(user.role != role){
+          if(!role.includes(user.role)){
             return res.json({
               isAuth: false,
               error: true,

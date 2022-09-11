@@ -20,7 +20,7 @@ router.get("/auth", auth(undefined), (req, res) => {
     });
 });
 
-router.post("/register", auth('admin'),  (req, res) => {
+router.post("/register", auth(['admin']),  (req, res) => {
 
     const user = new User(req.body);
     user.save((err, doc) => {
@@ -45,11 +45,34 @@ router.post("/register", auth('admin'),  (req, res) => {
     });
 });
 
-router.post("/modifyuser", auth('admin'),  (req, res) => {
+router.post("/deleteuser", auth(['admin']),  (req, res) => {
+   
+    User.findOne({email: req.body.email}, 'id',(err, doc) =>{
+
+        if (!doc){
+            
+            return res.json({success:false, message: 'Email do not exists'})
+        }
+        else{
+            User.deleteOne({email: req.body.email}, (err) =>{
+                if(err) res.json({success: false, err, message: 'error occured while deleting user'})
+                Student.deleteOne({email: req.body.email})
+                Teacher.deleteOne({email: req.body.email})
+                return res.status(200).send({
+                    success: true,
+                    message: 'User deleted Successfully'
+                })
+            })
+        }
+    })
+});
+
+
+router.post("/modifyuser", auth(['admin']),  (req, res) => {
 
     let user = req.body
     Object.keys(user).forEach((k) => user[k] == "" && delete user[k]);
-    console.log(user)
+
     User.findOneAndUpdate({ email: user.oldemail }, user, (err, doc) => {
         if (err) return res.json({ success: false, err , message: 'error occured while updating user'});
         if(!doc){
@@ -59,7 +82,7 @@ router.post("/modifyuser", auth('admin'),  (req, res) => {
             Student.findOneAndUpdate({email: user.oldemail},{grade: user.grade})
         }
         if(user.subject){
-            console.log('here')
+
             Teacher.findOneAndUpdate({email: user.oldemail},{subject: user.subject},)
         }
         return res.status(200).send({

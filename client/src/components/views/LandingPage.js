@@ -12,9 +12,9 @@ let LandingPage = () => {
          }
      
          let user = JSON.parse(localStorage.getItem('user'))
-         if(user.role == 'admin')  navigate("../adduser", { replace: true });
-         if(user.role == 'non-teacher'|| user.role == 'teacher')  navigate("../studentlist", { replace: true });
-         if(user.role == 'student')  navigate("../viewresult", { replace: true });
+         if(user.role == 'admin')  window.location.replace('/adduser')
+         if(user.role == 'non-teacher'|| user.role == 'teacher')  window.location.replace('/studentlist');
+         if(user.role == 'student')  window.location.replace('./viewresult');
     })
 }
 

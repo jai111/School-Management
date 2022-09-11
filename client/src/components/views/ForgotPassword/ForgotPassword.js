@@ -51,7 +51,7 @@ let ForgotPassword = (props) =>{
         axios.post('/api/users/forgotpassword', formState)
         .then(response => {
             if(response.data.success){
-                navigate("../login", { replace: true });
+                navigate("../", { replace: true });
                 setSuccessMessage(response.data.message)
             }
             else{

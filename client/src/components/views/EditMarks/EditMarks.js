@@ -2,14 +2,11 @@
 import axios from 'axios'
 import React, { useEffect, useState, useReducer } from 'react'
 import {useParams} from 'react-router-dom'
-import './AssginStudent.css'
 
-const initialFormState = {
-
-    };
+const initialFormState = {}
 
 
-let AssginStudent = () => {
+let EditMarks = () => {
 
     let {id} = useParams()
 
@@ -23,11 +20,9 @@ let AssginStudent = () => {
         )
     }
     
-    const [data, setData] = useState([])
     const [message, setMessage] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
     
-    let subjects = ['english', 'hindi', 'maths', 'social', 'science']
 
     const formReducer = (state, action) => {
         switch(action.type){
@@ -43,16 +38,43 @@ let AssginStudent = () => {
 
     const [formState, dispatch] = useReducer(formReducer, initialFormState)
 
-    useEffect(()=>{
-        axios.get('/api/teachers/findteachers')
-        .then(response =>{
-            setData(response.data.teachers)
-        })
-    }, [])
+    let Validate = (form)=>{
+        
+        if(!form.semester){
+            setMessage('Select Semester')
+            return false
+        }
+
+        if(!form.marks || isNaN(form.marks)){
+            setMessage('Enter marks as number')
+            return false
+        }
+        if(!isNaN(form.marks)){
+            if(form.semester == 'midterm1' || form.semester == 'midterm2'){
+                if(form.marks>25){
+                    setMessage('Marks Should be below 25 for mid terms')
+                    return false
+                }
+            }
+            else{
+                if(form.marks > 75){
+                    setMessage('Marks Should be below 75 for semesters')
+                    return false
+                }
+            }
+        }
+
+        return true
+    }
 
     let handleSubmit = () =>{
-        
-        axios.post(`/api/students/updateteachers/${id}`, Object.values(formState))
+        setMessage('')
+        setSuccessMessage('')
+
+        if(!Validate(formState)){
+            return
+        }
+        axios.post(`/api/students/updatemarks/${id}`, formState)
         .then(response =>{
             if(response.data.success){
                 setSuccessMessage(response.data.message)
@@ -69,7 +91,7 @@ let AssginStudent = () => {
             <div className="form_wrapper">
             <div className="form_container">
             <div className="title_container">
-                <h2>Assgin</h2>
+                <h2>Assgin Marks</h2>
             </div>
             <div className="row clearfix">
                 <div className="">
@@ -77,28 +99,17 @@ let AssginStudent = () => {
                     <div style={{color: 'green', textAlign: 'center', marginBottom: '10px'}}>{successMessage}</div>
                     <form >
                         <div className="input_field select_option">
-                            {
-                                subjects.map( (subject, ind) =>{
-                                    return (
-                                        <React.Fragment key={ind}>
-                                            <select name={subject} className='clasic'  style={{height:'50px', marginBottom:'10px'}} onChange={(e)=>handleTextChange(e)} required>
-                                                <option value="" disabled selected>{subject}</option>
-                                                {
-                                                    data[subject] && data[subject].map((teacher, id) =>{
-                                                        return(
-                                                            <React.Fragment key={id}>
-                                                                <option value={teacher._id}>{`${teacher.firstname} ${teacher.lastname}`}</option>
-                                                            </React.Fragment>
-                                                        )
-                                                    })
-                                                }
-                                            </select>
-                                            <div className="arrow"></div>
-                                            
-                                        </React.Fragment>
-                                    )
-                                })
-                            }
+                                <select name='semester' value={formState.subject}  onChange={(e)=>handleTextChange(e)} required>
+                                    <option value="" disabled selected>Semester</option>
+                                    <option value='midterm1'>Mid Term1</option>
+                                    <option value='semester1'>Semester1</option>
+                                    <option value='midterm2'>Mid Term2</option>
+                                    <option value='semester2'>Semester2</option>
+                                </select>
+                                <div className="select_arrow"></div>
+                        </div>
+                        <div className="input_field">
+                            <input type="email" name="marks" placeholder="Marks" value={formState.email}  onChange={(e)=>handleTextChange(e)} required />
                         </div>
                         <input className="button" type="button" value="Assgin" onClick={handleSubmit} />
                     </form>
@@ -110,4 +121,4 @@ let AssginStudent = () => {
     )
 }
 
-export default AssginStudent
+export default EditMarks

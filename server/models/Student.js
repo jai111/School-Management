@@ -16,42 +16,42 @@ const studentSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
         }
     ],
-    midterm1: [
+    marks: {
+        midterm1:
         {
-            math : Number,
-            science: Number,
-            social: Number,
-            hindi: Number,
-            english: Number,
-        }
-    ],
-    semester1: [
+            maths : {type: Number, default: 0},
+            science: {type: Number, default: 0},
+            social: {type: Number, default: 0},
+            hindi: {type: Number, default: 0},
+            english: {type: Number, default: 0},
+        },
+    semester1: 
         {
-            math : Number,
-            science: Number,
-            social: Number,
-            hindi: Number,
-            english: Number,
+            maths : {type: Number, default: 0},
+            science: {type: Number, default: 0},
+            social: {type: Number, default: 0},
+            hindi: {type: Number, default: 0},
+            english: {type: Number, default: 0},
         }
-    ],
-    midterm2: [
+    ,
+    midterm2: 
         {
-            math : Number,
-            science: Number,
-            social: Number,
-            hindi: Number,
-            english: Number,
+            maths : {type: Number, default: 0},
+            science: {type: Number, default: 0},
+            social: {type: Number, default: 0},
+            hindi: {type: Number, default: 0},
+            english: {type: Number, default: 0},
         }
-    ],
-    semester2: [
+    ,
+    semester2: 
         {
-            math : Number,
-            science: Number,
-            social: Number,
-            hindi: Number,
-            english: Number,
+            maths : {type: Number, default: 0},
+            science: {type: Number, default: 0},
+            social: {type: Number, default: 0},
+            hindi: {type: Number, default: 0},
+            english: {type: Number, default: 0},
         }
-    ]
+    }
 })      
 
 const Student = mongoose.model('Student', studentSchema);

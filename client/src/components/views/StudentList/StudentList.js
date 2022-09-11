@@ -14,6 +14,7 @@ let StudentList = (props) =>{
     }
 
     let handleSubmit = () =>{
+        
         axios.get(`/api/students/findstudents/${grade}`)
         .then(response =>{
             if(response.data.success){
@@ -61,9 +62,10 @@ let StudentList = (props) =>{
                 <main>
                     {
                         students.map((student, ind) => {
+                            let api = JSON.parse(localStorage.getItem('user')).role == 'non-teacher' ? `/assgin/${student._id}` : `/editmarks/${student._id}`
                             return(
                                 <React.Fragment key={ind}>
-                                    <Link to={`/assgin/${student._id}`}>
+                                    <Link to={api}>
                                         <article>
                                             <div>
                                             <div style = {{textAlign: 'center', marginBottom: '2px'}}>

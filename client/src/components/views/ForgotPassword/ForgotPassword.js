@@ -1,5 +1,4 @@
 import React, {useReducer, useState} from 'react'
-import './LoginPage.css'
 import { FaEnvelope, FaLock } from "react-icons/fa"
 import axios from 'axios'
 import { useNavigate, Link} from 'react-router-dom'
@@ -10,7 +9,7 @@ const initialFormState = {
     };
 
 
-let LoginPage = (props) =>{
+let ForgotPassword = (props) =>{
 
     let navigate = useNavigate()
 
@@ -89,22 +88,21 @@ let LoginPage = (props) =>{
         <div className="form_wrapper">
             <div className="form_container">
             <div className="title_container">
-                <h2>Login</h2>
+                <h2>Forgot Password</h2>
             </div>
             <div className="row clearfix">
                 <div className="">
                     <div style={{color: 'red', textAlign: 'center', marginBottom: '10px'}}>{message}</div>
                     <form >
                         <div className="input_field">
-                            <span><FaEnvelope style={{marginTop:'8px'}}/></span>
-                            <input type="email" name="email" placeholder="Email" value={formState.email}  onChange={(e)=>handleTextChange(e)} required />
+                            <span><FaLock style={{marginTop:'8px'}}/></span>
+                            <input type="password" name="password1" placeholder="New Password" value={formState.password1}  onChange={(e)=>handleTextChange(e)} required />
                         </div>
                         <div className="input_field">
                             <span><FaLock style={{marginTop:'8px'}}/></span>
-                            <input type="password" name="password" placeholder="Password" value={formState.password}  onChange={(e)=>handleTextChange(e)} required />
+                            <input type="password" name="password2" placeholder="Retype Password" value={formState.password2}  onChange={(e)=>handleTextChange(e)} required />
                         </div>
-                        <input className="button" type="button" value="Login" disabled={isSubmiting} onClick={handleSubmit}  />
-                        <Link to='/forgotpassword'><div style={{color:'#00bfff', textAlign: 'center'}}>forgot password?</div></Link>
+                        <input className="button" type="button" value="Submit" disabled={isSubmiting} onClick={handleSubmit}  />
                     </form>
                 </div>
             </div>
@@ -113,4 +111,4 @@ let LoginPage = (props) =>{
     )
 }
 
-export default LoginPage;
+export default ForgotPassword;

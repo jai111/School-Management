@@ -4,6 +4,8 @@ const { User } = require("../models/User");
 const {Student} = require("../models/Student");
 const {Teacher} = require("../models/Teacher")
 const { auth } = require("../middleware/auth");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 //=================================
 //             User
@@ -135,4 +137,22 @@ router.get("/logout", auth(undefined), (req, res) => {
     });
 });
 
+router.post('/forgotpassword', auth(undefined), (req, res) =>{
+    bcrypt.genSalt(saltRounds, function(err, salt){
+        if(err) return res.json({ success: false, err , message: 'Some Error occurred'});
+
+        bcrypt.hash(req.body.password1, salt, function(err, hash){
+            if(err) return next(err);
+            User.findOneAndUpdate({_id: req.user._id}, {password: hash}, (err, doc) =>{
+                if(err) return res.json({ success: false, err , message: 'Some Error occurred'});
+                return res.status(200).json({
+                    success: true ,
+                    message: 'Password changed successfully'
+                })
+            } )      
+        })
+    })
+})
+
 module.exports = router;
+

@@ -25,23 +25,18 @@ let ForgotPassword = (props) =>{
         }
     }
 
-    const validateEmail = (email) => {
-        return String(email)
-          .toLowerCase()
-          .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          );
-      };
 
     let Validate = (form)=>{
-        if(!validateEmail(form.email)){
-            setMessage('Enter valid email')
+
+        if(form.password1 !== form.password2){
+            setMessage('password do not match')
             return false
         }
-        if(!form.password){
-            setMessage('Enter Password')
+        if(form.password1.length < 8){
+            setMessage('password must be atleast 8 characters long')
             return false
         }
+        
 
         return true
     }
@@ -50,15 +45,17 @@ let ForgotPassword = (props) =>{
         if(!Validate(formState)){
             return
         }
+        setMessage('')
+        setSuccessMessage('')
         setIsSubmiting(true)
-        axios.post('/api/users/login', formState)
+        axios.post('/api/users/forgotpassword', formState)
         .then(response => {
-            if(response.data.loginSuccess){
-                localStorage.setItem('user',  JSON.stringify(response.data.user))
-                navigate("../", { replace: true });
+            if(response.data.success){
+                navigate("../login", { replace: true });
+                setSuccessMessage(response.data.message)
             }
             else{
-                setMessage('Check your account or password again')
+                setMessage(response.data.message)
             }
         })
         .catch(err=> {
@@ -71,8 +68,10 @@ let ForgotPassword = (props) =>{
     }
 
     const [formState, dispatch] = useReducer(formReducer, initialFormState)
+    
     const [isSubmiting, setIsSubmiting] = useState(false)
     const [message, setMessage] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
 
     const handleTextChange = (e) => {
         dispatch(
@@ -93,6 +92,7 @@ let ForgotPassword = (props) =>{
             <div className="row clearfix">
                 <div className="">
                     <div style={{color: 'red', textAlign: 'center', marginBottom: '10px'}}>{message}</div>
+                    <div style={{color: 'green', textAlign: 'center', marginBottom: '10px'}}>{successMessage}</div>
                     <form >
                         <div className="input_field">
                             <span><FaLock style={{marginTop:'8px'}}/></span>

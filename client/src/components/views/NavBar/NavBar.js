@@ -27,6 +27,7 @@ const NavBar = () => {
     return(
         <header className='navbar'>
             <div className='navbar__title navbar__item'>SchoolManagement</div>
+            {role ? <Link to = "/forgotpassword"><div className='navbar__title navbar__item'>Change Password</div></Link> : null}
             {role == 'admin' ? <Link to = "/adduser"><div className='navbar__title navbar__item'>addUser</div></Link> : null}
             {role == 'admin' ? <Link to = "/modifyuser"><div className='navbar__title navbar__item'>modifyUser</div></Link> : null}
             {role == 'admin' ? <Link to = "/deleteuser"><div className='navbar__title navbar__item'>deleteUser</div></Link> : null}

@@ -137,21 +137,34 @@ router.get("/logout", auth(undefined), (req, res) => {
     });
 });
 
-router.post('/forgotpassword', auth(undefined), (req, res) =>{
-    bcrypt.genSalt(saltRounds, function(err, salt){
-        if(err) return res.json({ success: false, err , message: 'Some Error occurred'});
+router.post('/forgotpassword', (req, res) =>{
+    User.findOne({ email: req.body.email }, (err, user) => {
+        if (!user)
+            return res.json({
+                loginSuccess: false,
+                message: "Auth failed, email not found"
+            });
 
-        bcrypt.hash(req.body.password1, salt, function(err, hash){
-            if(err) return next(err);
-            User.findOneAndUpdate({_id: req.user._id}, {password: hash}, (err, doc) =>{
-                if(err) return res.json({ success: false, err , message: 'Some Error occurred'});
-                return res.status(200).json({
-                    success: true ,
-                    message: 'Password changed successfully'
+        user.comparePassword(req.body.password, (err, isMatch) => {
+            if (!isMatch)
+                return res.json({ loginSuccess: false, message: "Wrong password" });
+                bcrypt.genSalt(saltRounds, function(err, salt){
+                    if(err) return res.json({ success: false, err , message: 'Some Error occurred'});
+            
+                    bcrypt.hash(req.body.password1, salt, function(err, hash){
+                        if(err) return next(err);
+                        User.findOneAndUpdate({email: req.body.email}, {password: hash}, (err, doc) =>{
+                            if(err) return res.json({ success: false, err , message: 'Some Error occurred'});
+                            return res.status(200).json({
+                                success: true ,
+                                message: 'Password changed successfully'
+                            })
+                        } )      
+                    })
                 })
-            } )      
-        })
-    })
+        });
+    });
+
 })
 
 module.exports = router;

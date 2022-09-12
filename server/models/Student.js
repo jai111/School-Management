@@ -19,37 +19,37 @@ const studentSchema = mongoose.Schema({
     marks: {
         midterm1:
         {
-            maths : {type: Number, default: 0},
-            science: {type: Number, default: 0},
-            social: {type: Number, default: 0},
-            hindi: {type: Number, default: 0},
-            english: {type: Number, default: 0},
+            maths : {type: Number},
+            science: {type: Number},
+            social: {type: Number},
+            hindi: {type: Number},
+            english: {type: Number},
         },
     semester1: 
         {
-            maths : {type: Number, default: 0},
-            science: {type: Number, default: 0},
-            social: {type: Number, default: 0},
-            hindi: {type: Number, default: 0},
-            english: {type: Number, default: 0},
+            maths : {type: Number},
+            science: {type: Number},
+            social: {type: Number},
+            hindi: {type: Number},
+            english: {type: Number},
         }
     ,
     midterm2: 
         {
-            maths : {type: Number, default: 0},
-            science: {type: Number, default: 0},
-            social: {type: Number, default: 0},
-            hindi: {type: Number, default: 0},
-            english: {type: Number, default: 0},
+            maths : {type: Number},
+            science: {type: Number},
+            social: {type: Number},
+            hindi: {type: Number},
+            english: {type: Number},
         }
     ,
     semester2: 
         {
-            maths : {type: Number, default: 0},
-            science: {type: Number, default: 0},
-            social: {type: Number, default: 0},
-            hindi: {type: Number, default: 0},
-            english: {type: Number, default: 0},
+            maths : {type: Number},
+            science: {type: Number},
+            social: {type: Number},
+            hindi: {type: Number},
+            english: {type: Number},
         }
     }
 })      

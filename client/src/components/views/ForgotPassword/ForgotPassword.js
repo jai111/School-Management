@@ -25,8 +25,20 @@ let ForgotPassword = (props) =>{
         }
     }
 
+    const validateEmail = (email) => {
+        return String(email)
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          );
+      };
+
 
     let Validate = (form)=>{
+        if(!validateEmail(form.email)){
+            setMessage('Enter valid email')
+            return false
+        }
 
         if(form.password1 !== form.password2){
             setMessage('password do not match')
@@ -42,11 +54,11 @@ let ForgotPassword = (props) =>{
     }
 
     let handleSubmit = () =>{
+        setMessage('')
+        setSuccessMessage('')
         if(!Validate(formState)){
             return
         }
-        setMessage('')
-        setSuccessMessage('')
         setIsSubmiting(true)
         axios.post('/api/users/forgotpassword', formState)
         .then(response => {
@@ -94,6 +106,14 @@ let ForgotPassword = (props) =>{
                     <div style={{color: 'red', textAlign: 'center', marginBottom: '10px'}}>{message}</div>
                     <div style={{color: 'green', textAlign: 'center', marginBottom: '10px'}}>{successMessage}</div>
                     <form >
+                        <div className="input_field">
+                            <span><FaEnvelope style={{marginTop:'8px'}}/></span>
+                            <input type="email" name="email" placeholder="Email" value={formState.email}  onChange={(e)=>handleTextChange(e)} required />
+                        </div>
+                        <div className="input_field">
+                            <span><FaLock style={{marginTop:'8px'}}/></span>
+                            <input type="password" name="password" placeholder="Old Password" value={formState.password}  onChange={(e)=>handleTextChange(e)} required />
+                        </div>
                         <div className="input_field">
                             <span><FaLock style={{marginTop:'8px'}}/></span>
                             <input type="password" name="password1" placeholder="New Password" value={formState.password1}  onChange={(e)=>handleTextChange(e)} required />

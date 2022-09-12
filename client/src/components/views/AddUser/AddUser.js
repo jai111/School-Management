@@ -9,9 +9,9 @@ const initialFormState = {
     lastname: "",
     email: "",
     password: "",
-    role: "non-teacher",
-    grade: 6,
-    subject: 'maths'
+    role: "",
+    grade: "",
+    subject: ''
     };
 
 
@@ -105,17 +105,17 @@ let AddUser = (props) =>{
                     <form >
                         <div className="input_field">
                             <span><FaEnvelope style={{marginTop:'8px'}}/></span>
-                            <input type="email" name="email" placeholder="Email" value={formState.email}  onChange={(e)=>handleTextChange(e)} required />
+                            <input type="email" name="email" placeholder="Email*" value={formState.email}  onChange={(e)=>handleTextChange(e)} required />
                         </div>
                         <div className="input_field">
                             <span><FaLock style={{marginTop:'8px'}}/></span>
-                            <input type="password" name="password" placeholder="Password" value={formState.password}  onChange={(e)=>handleTextChange(e)} required />
+                            <input type="password" name="password" placeholder="Password*" value={formState.password}  onChange={(e)=>handleTextChange(e)} required />
                         </div>
                         <div className="row clearfix">
                             <div className="col_half">
                                 <div className="input_field">
                                     <span><FaUserAlt style={{marginTop:'8px'}}/></span>
-                                    <input type="text" name="firstname" placeholder="First Name" value={formState.firstname}  onChange={(e)=>handleTextChange(e)} required />
+                                    <input type="text" name="firstname" placeholder="First Name*" value={formState.firstname}  onChange={(e)=>handleTextChange(e)} required />
                                 </div>                                
                             </div>
                             <div className="col_half">
@@ -126,7 +126,7 @@ let AddUser = (props) =>{
                         </div>
                         <div className="input_field select_option">
                             <select name='role' value={formState.role}  onChange={(e)=>handleTextChange(e)} required>
-                                <option value="" disabled selected>Role</option>
+                                <option value="" disabled selected>Role*</option>
                                 <option value='non-teacher'>Non-Teacher</option>
                                 <option value='teacher'>Teacher</option>
                                 <option value='student'>Student</option>

@@ -79,7 +79,6 @@ router.get('/getmarks', auth(['student']), (req, res)=>{
 
     Student.find({user_id: req.user._id}, (err, doc) =>{
         if (err) return res.json({ success: false, err, message: 'Some Error occured' });
-
         return res.status(200).send({
             success: true,
             message: 'marks retrieved',

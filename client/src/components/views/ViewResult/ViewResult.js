@@ -7,6 +7,7 @@ let ViewResult = (props) =>{
     const [message, setMessage] = useState('')
     const [marks, setMarks] =useState('')
     const [semester, setSemester] = useState()
+    
 
     const handleTextChange = (e) => {
         setSemester(e.target.value)
@@ -30,14 +31,33 @@ let ViewResult = (props) =>{
     }
     let user = JSON.parse(localStorage.getItem('user'))
     var name = `${user.firstname} ${user.lastname}`
-    console.log(marks, semester)
+    
+    let calculatePercentage = () =>{
+        let semester1 =  Object.values(marks['semester1']).reduce((a, b) => a + b);
+        let semester2 =  Object.values(marks['semester2']).reduce((a, b) => a + b);
+        let midterm1 =  Object.values(marks['midterm1']).reduce((a, b) => a + b);
+        let midterm2 =  Object.values(marks['midterm2']).reduce((a, b) => a + b);
+
+        console.log(semester1, semester2, midterm1, midterm2)
+        let midtermPercentage 
+        if(midterm1 > midterm2){
+            midtermPercentage = midterm1*0.3 + midterm2 * 0.1
+        } 
+        else{
+            midtermPercentage = midterm2*0.3 + midterm1 * 0.1
+        }
+        let semesterPercentage = ((semester1 + semester2)/2)*0.6
+        console.log(midtermPercentage, semesterPercentage)
+
+        return midtermPercentage + semesterPercentage
+    }
 
     return (
         <>
             <div className="form_wrapper">
                 <div className="form_container">
                     <div className="title_container">
-                        <h2>Find Students</h2>
+                        <h2>View Result</h2>
                     </div>
                     <div className="row clearfix">
                         <div className="">
@@ -73,7 +93,7 @@ let ViewResult = (props) =>{
                                         <th>English</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                               { Object.keys(marks[semester]).length!==0 && <tbody>
                                     <td>{name}</td>
                                     <td>{marks[semester]['maths']}</td>
                                     <td>{marks[semester]['science']}</td>
@@ -81,8 +101,15 @@ let ViewResult = (props) =>{
                                     <td>{marks[semester]['hindi']}</td>
                                     <td>{marks[semester]['english']}</td>
                                     
-                                </tbody>
+                                </tbody>}
                             </table>
+                            <div style = {{marginTop: '10px', fontSize: '20px33'}}>
+                                {
+                                    Object.keys(marks['semester2']).length!==0 && <div>
+                                        Annual Percentage: {calculatePercentage()}
+                                    </div>
+                                }
+                            </div>
                         </div>
             
             }

@@ -105,7 +105,7 @@ let LoginPage = (props) =>{
                             <input type="password" name="password" placeholder="Password" value={formState.password}  onChange={(e)=>handleTextChange(e)} required />
                         </div>
                         <input className="button" type="button" value="Login" disabled={isSubmiting} onClick={handleSubmit}  />
-                        <Link to='/forgotpassword'><div style={{textAlign:'center', color: '#00bfff'}}>forgot pasword?</div></Link>
+                        <Link to='/forgotpassword'><div style={{textAlign:'center', color: '#00bfff'}}>change pasword?</div></Link>
                     </form>
                 </div>
             </div>

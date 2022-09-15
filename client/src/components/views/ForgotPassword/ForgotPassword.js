@@ -40,11 +40,15 @@ let ForgotPassword = (props) =>{
             return false
         }
 
+        if(!form.password1){
+            setMessage('enter password')
+            return false
+        }
         if(form.password1 !== form.password2){
             setMessage('password do not match')
             return false
         }
-        if(form.password1.length < 8){
+        if(form.password1 && form.password1.length < 8){
             setMessage('password must be atleast 8 characters long')
             return false
         }

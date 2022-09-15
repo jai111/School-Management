@@ -146,8 +146,7 @@ router.post('/forgotpassword', (req, res) =>{
             });
 
         user.comparePassword(req.body.password, (err, isMatch) => {
-            if (!isMatch)
-                return res.json({ loginSuccess: false, message: "Wrong password" });
+                if (!isMatch) return res.json({ loginSuccess: false, message: "Wrong password" });
                 bcrypt.genSalt(saltRounds, function(err, salt){
                     if(err) return res.json({ success: false, err , message: 'Some Error occurred'});
             

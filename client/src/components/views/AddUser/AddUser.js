@@ -59,11 +59,11 @@ let AddUser = (props) =>{
     }
 
     let handleSubmit = () =>{
+        setMessage('')
+        setSuccessMessage('')
         if(!Validate(formState)){
             return
         }
-        setMessage('')
-        setSuccessMessage('')
         axios.post('/api/users/register', formState)
         .then(response => {
             if(response.data.success){

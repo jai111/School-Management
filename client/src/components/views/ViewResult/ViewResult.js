@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useEffect, useState} from 'react'
 import axios from 'axios'
 import './ViewResult.css'
 
@@ -7,6 +7,7 @@ let ViewResult = (props) =>{
     const [message, setMessage] = useState('')
     const [marks, setMarks] =useState('')
     const [semester, setSemester] = useState()
+    const [percentage, setPercentage] = useState()
     
 
     const handleTextChange = (e) => {
@@ -18,7 +19,6 @@ let ViewResult = (props) =>{
         axios.get('/api/students/getmarks')
         .then(response =>{
             if(response.data.success){
-                console.log(response.data.marks)
                 setMessage('')
                 setMarks(response.data.marks)
             }
@@ -33,24 +33,34 @@ let ViewResult = (props) =>{
     var name = `${user.firstname} ${user.lastname}`
     
     let calculatePercentage = () =>{
-        let semester1 =  Object.values(marks['semester1']).reduce((a, b) => a + b);
-        let semester2 =  Object.values(marks['semester2']).reduce((a, b) => a + b);
-        let midterm1 =  Object.values(marks['midterm1']).reduce((a, b) => a + b);
-        let midterm2 =  Object.values(marks['midterm2']).reduce((a, b) => a + b);
 
-        console.log(semester1, semester2, midterm1, midterm2)
-        let midtermPercentage 
-        if(midterm1 > midterm2){
-            midtermPercentage = midterm1*0.3 + midterm2 * 0.1
-        } 
-        else{
-            midtermPercentage = midterm2*0.3 + midterm1 * 0.1
+        let subjects = ['maths', 'science', 'social', 'hindi', 'english']
+        var percentage = {}
+        for ( let subject =0; subject < subjects.length; subject++){
+            let semester1 = marks['semester1'][subjects[subject]] ? marks['semester1'][subjects[subject]] : 0
+            let semester2 = marks['semester2'][subjects[subject]] ? marks['semester2'][subjects[subject]] : 0
+            let midterm1 = marks['midterm1'][subjects[subject]] ? marks['midterm1'][subjects[subject]] : 0
+            let midterm2 = marks['midterm2'][subjects[subject]] ? marks['midterm2'][subjects[subject]] : 0
+            let midtermPercentage
+            if(midterm1 > midterm2){
+                midtermPercentage = midterm1*0.3 + midterm2 * 0.1
+            } 
+            else{
+                midtermPercentage = midterm2*0.3 + midterm1 * 0.1
+            }
+            let semesterPercentage = ((semester1 + semester2)/2)*0.6
+            percentage[subjects[subject]] = midtermPercentage + semesterPercentage
+
         }
-        let semesterPercentage = ((semester1 + semester2)/2)*0.6
-        console.log(midtermPercentage, semesterPercentage)
-
-        return midtermPercentage + semesterPercentage
+        setPercentage(percentage)
     }
+
+    useEffect(() =>{
+        if(marks && Object.keys(marks['semester2']).length!==0){
+            calculatePercentage()
+        }    
+    }, [marks])
+    
 
     return (
         <>
@@ -81,7 +91,7 @@ let ViewResult = (props) =>{
             </div>
             {
                 marks!=='' &&  <div className='container'>
-                            <h2></h2>
+                            <h2>{  `Marks for ${semester}`}</h2>
                             <table>
                                 <thead>
                                     <tr>
@@ -101,30 +111,46 @@ let ViewResult = (props) =>{
                                     <td>{marks[semester]['hindi']}</td>
                                     <td>{marks[semester]['english']}</td>
                                     
-                                </tbody>}
+                                </tbody>
+                                } 
                             </table>
+                            {
+                                    Object.keys(marks[semester]).length === 0 && 
+                                    <div style = {{color: 'red', textAlign:'center', marginTop:'50px'}}><h3>No result to Show</h3></div>
+                            }
                             <div style = {{marginTop: '10px', fontSize: '20px33'}}>
                                 {
                                     Object.keys(marks['semester2']).length!==0 && <div>
-                                        Annual Percentage: {calculatePercentage()}
+                                        <div style = {{textAlign: 'center'}}><h2>Annual Percentage:</h2></div>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Maths</th>
+                                                    <th>Science</th>
+                                                    <th>Social</th>
+                                                    <th>Hindi</th>
+                                                    <th>English</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                           { percentage && <tbody>
+                                                    <td>{name}</td>
+                                                    <td>{percentage['maths']}</td>
+                                                    <td>{percentage['science']}</td>
+                                                    <td>{percentage['social']}</td>
+                                                    <td>{percentage['hindi']}</td>
+                                                    <td>{percentage['english']}</td>
+                                                        
+                                            </tbody>}
+                                            
+                                        </table>
                                     </div>
                                 }
                             </div>
                         </div>
             
             }
-            
-                    {/* <tbody>
-                    <tr>
-                        <td>01</td>
-                        <td>Ali</td>
-                        <td>86</td>
-                        <td>77</td>
-                        <td>87</td>
-                        <td>92</td>
-                        <td>95</td>
-                    </tr>
-                    </tbody> */}
       
         </>
     )
